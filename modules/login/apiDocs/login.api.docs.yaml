@@ -1,0 +1,567 @@
+paths:
+  /v4/login:
+    post:
+      tags:
+        - Login
+      summary: Login using mobile/email and password
+      operationId: post-v4-login
+      responses:
+        '200':
+          description: OK - Log in successful
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      authToken:
+                        type: string
+                        minLength: 1
+                  code:
+                    type: number
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - data
+                  - code
+                  - message
+              examples:
+                example-1-sucess:
+                  value:
+                    data:
+                      authToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YWNlNWYwNzlmZTdiMDFkNTgxZGNkZGMiLCJvc1R5cGUiOiJhbmRyb2lkIiwiZGV2aWNlIjoicGhvbmUiLCJpc1Rlc3RVc2VyIjpmYWxzZSwiaWF0IjoxNjA1NjkyNDEwfQ.RYKPmrdhPt7-dp7tk7Ii-1FsGeN0zBwGJFz8epnLJso
+                    code: 200
+                    message: User logged in successfully.
+                example-2-invalid-pass:
+                  value:
+                    data: {}
+                    code: 403
+                    message: Entered password is incorrect!
+                example-3-not-registered:
+                  value:
+                    data: {}
+                    code: 400
+                    message: This mobile is not registered with us. Please Sign Up.
+        '500':
+          description: |
+            Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties: {}
+                  code:
+                    type: number
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - data
+                  - code
+                  - message
+              examples:
+                example-1:
+                  value:
+                    data: {}
+                    code: 500
+                    message: Internal server error
+      description: Login with Email/Mobile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                countryCode:
+                  type: string
+                  minLength: 1
+                mobile:
+                  type: string
+                  minLength: 5
+                password:
+                  type: string
+                  minLength: 1
+                osType:
+                  type: string
+                  minLength: 1
+                device:
+                  type: string
+                  minLength: 1
+                captchaToken:
+                  type: string
+                  minLength: 1
+                email:
+                  type: string
+                  pattern: '^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
+              required:
+                - password
+                - osType
+                - device
+            examples:
+              example-1-app-mobileNo:
+                value:
+                  countryCode: '+91'
+                  mobile: '9997718999'
+                  password: password
+                  osType: android
+                  device: phone
+                  captchaToken: captch_token
+              example-2-web-mobileNo:
+                value:
+                  countryCode: '+91'
+                  mobile: '9997718999'
+                  password: password
+                  osType: web
+                  device: desktop
+              example-3-app-email:
+                value:
+                  password: password
+                  osType: android
+                  device: phone
+                  captchaToken: token
+                  email: email@email.com
+              example-4-web-email:
+                value:
+                  password: password
+                  osType: android
+                  device: phone
+                  captchaToken: token
+                  email: email@email.com
+  /v4/login/send-otp:
+    post:
+      summary: Send OTP for login
+      tags:
+        - Login
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties: {}
+                  code:
+                    type: number
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - data
+                  - code
+                  - message
+              examples:
+                example-1-success:
+                  value:
+                    data: {}
+                    code: 200
+                    message: User OTP sent.
+                example-2-not-registered:
+                  value:
+                    data: {}
+                    code: 400
+                    message: This mobile is not registered with us. Please Sign Up.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties: {}
+                  code:
+                    type: number
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - data
+                  - code
+                  - message
+              examples:
+                example-1:
+                  value:
+                    data: {}
+                    code: 500
+                    message: Internal server error
+      operationId: get-v4-login-send-otp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                mobile:
+                  type: string
+                  minLength: 5
+                countryCode:
+                  type: string
+                  minLength: 1
+                autoReadHash:
+                  type: boolean
+                captchaToken:
+                  type: string
+              required:
+                - mobile
+                - countryCode
+            examples:
+              example-1-web:
+                value:
+                  mobile: '9457631135'
+                  countryCode: '+91'
+              example-2-app:
+                value:
+                  mobile: string
+                  countryCode: string
+                  autoReadHash: true
+              example-3- with-captcha:
+                value:
+                  mobile: '9457631135'
+                  countryCode: '+91'
+                  captchaToken: token
+  /v4/login/verify-otp:
+    post:
+      summary: Verify OTP for login
+      tags:
+        - Login
+      operationId: post-v4-login-verify-otp
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: object
+                    required:
+                      - authToken
+                    properties:
+                      authToken:
+                        type: string
+                        minLength: 1
+                  code:
+                    type: number
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - data
+                  - code
+                  - message
+              examples:
+                example-1-success:
+                  value:
+                    data:
+                      authToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmE5NDM4MDJiNTJjZjNmYzQxYmNmZWIiLCJvc1R5cGUiOiJ3ZWIiLCJkZXZpY2UiOiJkZXNrdG9wIiwiaXNUZXN0VXNlciI6ZmFsc2UsImlhdCI6MTYwNDk4OTQ4MX0.s2PaZ5oErjhH9GZDV5bNys6LRb9e8RNRHbi5XtwhcoM
+                    code: 200
+                    message: OTP verified
+                example-2-otp-expired:
+                  value:
+                    data: {}
+                    code: 400
+                    message: OTP expired. Kindly use the Resend OTP option
+                example-3-invalid-otp:
+                  value:
+                    data: {}
+                    code: 400
+                    message: Invalid OTP
+        '500':
+          description: Bad Request - When user enters invalid otp or OTP is expired.
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties: {}
+                  code:
+                    type: number
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - data
+                  - code
+                  - message
+              examples:
+                example-1:
+                  value:
+                    data: {}
+                    code: 500
+                    message: Internal server error
+      description: This API will verify the OTP sent to the mobile number and make he user registred on myPAT.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                mobile:
+                  type: string
+                  pattern: '^[0-9]+'
+                  minLength: 6
+                countryCode:
+                  type: string
+                  minLength: 1
+                device:
+                  type: string
+                  minLength: 1
+                  enum:
+                    - desktop
+                    - tv
+                    - tablet
+                    - phone
+                    - bot
+                    - car
+                osType:
+                  type: string
+                  minLength: 1
+                  enum:
+                    - android
+                    - ios
+                    - web
+                    - watson
+                    - schoolpat
+                    - mdm
+                otp:
+                  type: string
+                  minLength: 4
+              required:
+                - mobile
+                - countryCode
+                - device
+                - osType
+                - otp
+            examples:
+              example-1-web:
+                value:
+                  mobile: '9997566999'
+                  countryCode: '+91'
+                  device: desktop
+                  osType: web
+                  otp: '2379'
+              example-2-app:
+                value:
+                  mobile: '9997566999'
+                  countryCode: '+91'
+                  device: phone
+                  osType: android
+                  otp: '2379'
+        description: Data to be sent for verify OTP.
+  '/v4/login/social/{type}':
+    post:
+      summary: Login using facebook/google
+      tags:
+        - Login
+      operationId: 'post-v4-social-:type-login'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      authToken:
+                        type: string
+                        minLength: 1
+                    required:
+                      - authToken
+                  code:
+                    type: number
+                  message:
+                    type: string
+                required:
+                  - data
+                  - code
+                  - message
+              examples:
+                example-1-success:
+                  value:
+                    data:
+                      authToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmFiODU1NDQyMjA1YzVkN2QwY2U4MDUiLCJvc1R5cGUiOiJhbmRyb2lkIiwiZGV2aWNlIjoicGhvbmUiLCJpc1Rlc3RVc2VyIjpmYWxzZSwiaWF0IjoxNjA1MDc2MzA4fQ.5beTZEasGrIPRkpXTQEmbIa6gLLFThJioP_vu1ecvV8
+                    code: 200
+                    message: ''
+                example-2-unauthorized:
+                  value:
+                    data: {}
+                    code: 406
+                    message: Unauthorized user
+      description: 'Login using facebook/google. Valid type: [''google'', facebook]'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                socialToken:
+                  type: string
+                  minLength: 1
+                osType:
+                  type: string
+                  minLength: 1
+                  enum:
+                    - android
+                    - ios
+                    - web
+                    - watson
+                    - schoolpat
+                    - mdm
+                device:
+                  type: string
+                  minLength: 1
+                  enum:
+                    - desktop
+                    - tv
+                    - tablet
+                    - phone
+                    - bot
+                    - car
+              required:
+                - socialToken
+                - osType
+                - device
+            examples:
+              example-1-app:
+                value:
+                  socialToken: EAAGJz2oMRksBAGMs10xgpbhWMj6cF5cZASZBH6x6SBVYa8ZB1UfszmGZCBwy3DfOU7he1wm6Miznbe9NFu2yeLC1qjzFBwMikvdTbemq0E0vhoYrwBhpfw9kpZAvHLU3xolfq3ubH7oCiRh6JuX0XQHLZCcQF5cXlZArJdimFzEoJKw9Fgpp3II
+                  osType: android
+                  device: phone
+              example-2-web:
+                value:
+                  socialToken: EAAGJz2oMRksBAGMs10xgpbhWMj6cF5cZASZBH6x6SBVYa8ZB1UfszmGZCBwy3DfOU7he1wm6Miznbe9NFu2yeLC1qjzFBwMikvdTbemq0E0vhoYrwBhpfw9kpZAvHLU3xolfq3ubH7oCiRh6JuX0XQHLZCcQF5cXlZArJdimFzEoJKw9Fgpp3II
+                  osType: web
+                  device: desktop
+      parameters: []
+    parameters:
+      - schema:
+          type: string
+          enum:
+            - google
+            - facebook
+        name: type
+        in: path
+        description: '[''google'', ''facebook'']'
+        required: true
+  /v4/enrollment-login:
+    post:
+      summary: Login using Enrollment No & Password
+      tags:
+        - Login
+      operationId: post-v4-enrollment-login
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      authToken:
+                        type: string
+                        minLength: 1
+                  code:
+                    type: number
+                  message:
+                    type: string
+                required:
+                  - data
+                  - code
+                  - message
+              examples:
+                example-1-success:
+                  value:
+                    data:
+                      authToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmFiODU1NDQyMjA1YzVkN2QwY2U4MDUiLCJvc1R5cGUiOiJhbmRyb2lkIiwiZGV2aWNlIjoicGhvbmUiLCJpc1Rlc3RVc2VyIjpmYWxzZSwiaWF0IjoxNjA1MDc2MzA4fQ.5beTZEasGrIPRkpXTQEmbIa6gLLFThJioP_vu1ecvV8
+                    code: 200
+                    message: User authenticated
+                example-2-incorrect-enrollment-no:
+                  value:
+                    data: {}
+                    code: 404
+                    message: Entered enrolment number is incorrect
+                example-3-incorrect-password:
+                  value:
+                    data: {}
+                    code: 406
+                    message: Entered password is incorrect!
+      description: Login using Enrollment No & Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                mypatEnrollmentNo:
+                  type: string
+                  minLength: 14
+                  maxLength: 14
+                password:
+                  type: string
+                osType:
+                  type: string
+                  minLength: 1
+                  enum:
+                    - android
+                    - ios
+                    - web
+                    - watson
+                    - schoolpat
+                    - mdm
+                device:
+                  type: string
+                  minLength: 1
+                  enum:
+                    - desktop
+                    - tv
+                    - tablet
+                    - phone
+                    - bot
+                    - car
+              required:
+                - mypatEnrollmentNo
+                - password
+                - osType
+                - device
+            examples:
+              example-1-success:
+                value:
+                  mypatEnrollmentNo: '11571220000004'
+                  password: '168530'
+                  osType: android
+                  device: phone
+      parameters: []
+components:
+  schemas: {}

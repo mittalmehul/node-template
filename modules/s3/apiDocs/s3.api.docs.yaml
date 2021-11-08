@@ -1,0 +1,100 @@
+paths:
+ /v4/auth/upload-signed-url:
+    get:
+      summary: get /v4/auth/upload-signed-url
+      tags:
+        - S3
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        minLength: 1
+                      fields:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                            minLength: 1
+                          acl:
+                            type: string
+                            minLength: 1
+                          bucket:
+                            type: string
+                            minLength: 1
+                          X-Amz-Algorithm:
+                            type: string
+                            minLength: 1
+                          X-Amz-Credential:
+                            type: string
+                            minLength: 1
+                          X-Amz-Date:
+                            type: string
+                            minLength: 1
+                          Policy:
+                            type: string
+                            minLength: 1
+                          X-Amz-Signature:
+                            type: string
+                            minLength: 1
+                  code:
+                    type: number
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - data
+                  - code
+                  - message
+              examples:
+                example-1:
+                  value:
+                    data:
+                      url: 'https://s3.us-west-2.amazonaws.com/mypat-v2-staging'
+                      fields:
+                        key: schoolStudentId/test.png
+                        acl: public-read
+                        bucket: mypat-v2-staging
+                        X-Amz-Algorithm: AWS4-HMAC-SHA256
+                        X-Amz-Credential: ' AKIASI7MZGVGUD7J6M5I/20201118/us-west-2/s3/aws4_request'
+                        X-Amz-Date: 20201118T115302Z
+                        Policy: eyJleHBpcmF0aW9uIjoiMjAyMC0xMS0xOFQxMjowODowMloiLCJjb25kaXRpb25zIjpbeyJrZXkiOiJzY2hvb2xTdHVkZW50SWQvdGVzdC5wbmcifSx7ImFjbCI6InB1YmxpYy1yZWFkIn0seyJidWNrZXQiOiJteXBhdC12Mi1zdGFnaW5nIn0seyJYLUFtei1BbGdvcml0aG0iOiJBV1M0LUhNQUMtU0hBMjU2In0seyJYLUFtei1DcmVkZW50aWFsIjoiIEFLSUFTSTdNWkdWR1VEN0o2TTVJLzIwMjAxMTE4L3VzLXdlc3QtMi9zMy9hd3M0X3JlcXVlc3QifSx7IlgtQW16LURhdGUiOiIyMDIwMTExOFQxMTUzMDJaIn1dfQ==
+                        X-Amz-Signature: de23bf579d10e1e47fe030d63d5775bc6d6b7ae4b422f8d5e1a09bc07f915564
+                    code: 200
+                    message: Successful Get Presigned Url
+      operationId: get-v4-auth-upload-image
+      security:
+        - authorization: []
+      parameters:
+        - schema:
+            type: string
+            example: 'test.png'
+          in: query
+          name: key
+          required: true
+        - schema:
+            type: string
+            example: 'schoolId'
+          in: query
+          name: location
+          required: true
+          description: ''
+components:
+  schemas: {}
+  securitySchemes:
+    authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+tags:
+  - name: S3
+
