@@ -1,78 +1,56 @@
 {
-  "name": "auth-service-b",
-  "version": "0.0.1",
+  "name": "node-template",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "USE_CUSTOM_CONFIG=true node app.js",
-    "mock-server": "node utils/mockApi/prism.js && prism mock utils/mockApi/swaggerDoc.json&",
     "lint": "eslint '**/*.js' --fix",
-    "format": "prettier-eslint '**/*.{js,json}' --write",
-    "pretty": "prettier --write --tab-width 2 \"**/*.js\"",
-    "test": "NODE_ENV=development USE_CUSTOM_CONFIG=true mocha --exit --recursive './modules/**/*tests.js' --timeout 10000",
-    "test-with-coverage": "NODE_ENV=development USE_CUSTOM_CONFIG=true nyc --reporter=text -x 'mypat-commons' mocha --recursive './modules/**/*tests.js'",
-    "test-auto-cases": "NODE_ENV=development mocha --recursive './tests/**/*.js'",
     "create-module": "bash ./scripts/create.module.sh"
   },
   "lint-staged": {
     "**/*.js": [
       "eslint --fix",
-      "prettier-eslint --write",
       "git add"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "roh": {
     "pr": "watch"
   },
   "dependencies": {
-    "@stoplight/prism-cli": "^4.1.0",
     "aws-sdk": "^2.784.0",
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.12",
-    "chai": "^4.2.0",
-    "chai-http": "^4.3.0",
-    "chai-openapi-response-validator": "^0.7.0",
-    "chakram": "^1.5.0",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
     "elasticsearch": "^16.7.1",
     "express": "^4.17.1",
-    "express-ajv-swagger-validation": "^1.1.1",
     "express-http-context": "^1.2.3",
     "helmet": "^4.2.0",
-    "install": "^0.13.0",
     "jsonwebtoken": "^8.5.1",
-    "libphonenumber-js": "^1.8.7",
     "lodash": "^4.17.15",
     "moment": "^2.29.1",
     "mongoosastic": "^4.6.0",
     "mongoose": "^5.8.9",
-    "mongoose-to-swagger": "^1.0.3",
     "morgan": "^1.9.1",
-    "npm": "^6.13.7",
-    "nyc": "^15.0.0",
-    "oatts": "^1.5.0",
-    "pug": "^2.0.4",
-    "ramda": "^0.27.1",
+    "npm": "^7.20.6",
     "redis": "^3.0.2",
     "request-promise": "^4.2.6",
-    "restana": "^4.8.0",
-    "striptags": "^3.1.1",
-    "swagger-jsdoc": "^3.5.0",
-    "swagger-tools": "^0.10.4",
-    "swagger-ui-express": "^4.1.2",
     "uuid": "^3.4.0",
     "validatorjs": "^3.20.0"
   },
   "devDependencies": {
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint": "^8.7.0",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.17.3",
     "husky": "^2.7.0",
-    "lint-staged": "^8.1.7",
-    "mocha": "^4.0.1",
-    "prettier-eslint-cli": "^5.0.0"
+    "lint-staged": "^12.1.7"
   }
 }

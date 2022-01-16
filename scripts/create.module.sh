@@ -43,7 +43,6 @@ mkdir routes
 touch routes/$1.routes.js
 echo "const { getFunction } = require('../controllers/$1.controller');
 const { validateAuth } = require('../../../middlewares/auth/auth.middleware');
-const { swaggerValidation } = require('../../../utils/apiDocs/swagger');
 
 module.exports = (router) => {
   /**
@@ -53,15 +52,9 @@ module.exports = (router) => {
   router.get('/your-path', swaggerValidation.validate, validateAuth, getFunction);
 };" >> routes/$1.routes.js
 
-mkdir apiDocs
-touch apiDocs/$1.api.docs.yaml
-echo "/$1:" >> apiDocs/$1.api.docs.yaml
-
 mkdir helpers
 touch helpers/$1.helper.js
 
-mkdir tests
-touch tests/$1.tests.js
 
 cd ../../
 

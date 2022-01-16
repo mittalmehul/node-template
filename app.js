@@ -6,8 +6,6 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const dotenv = require('dotenv');
 const compression = require('compression');
-const swaggerUi = require('swagger-ui-express');
-const { swaggerSpec, swaggerValidation } = require('./utils/apiDocs/swagger');
 const {
   errorResponse,
   statusCodes: { STATUS_CODE_FAILURE, STATUS_CODE_DATA_NOT_FOUND },
@@ -36,72 +34,26 @@ initConfig()
   .then((config) => {
     const routes = require('./routes');
     const { validateAuth } = require('./middlewares/auth/auth.middleware');
-    const { getAllowedOrigins } = require('./config');
-
-    // enable CORS - Cross Origin Resource Sharing
-    const allowCrossDomain = function allowCrossDomain(req, res, next) {
-      const { origin } = req.headers;
-      const allowedOrigins = getAllowedOrigins();
-      res.setHeader('Access-Control-Allow-Origin', origin);
-
-      res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-      res.setHeader('Access-Control-Allow-Credentials', 'true');
-      res.setHeader(
-        'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, Content-Length, X-Requested-With, Access-Token',
-      );
-
-      // intercept OPTIONS method
-      // eslint-disable-next-line eqeqeq
-      if (req.method == 'OPTIONS') {
-        res.send(200);
-      } else {
-        next();
-      }
-    };
+    const { allowCrossDomain } = require('./middlewares/cors/cors.middleware');
+    const { mongoInit } = require('./dbModels/connection');
 
     // gzip, deflate compression of API response to reduce data transfer over internet
     app.use(compression());
 
+    // enable CORS - Cross Origin Resource Sharing
     app.use(allowCrossDomain);
 
-    app.use(secureSignup);
-    if (process.env.NODE_ENV !== 'production') {
-      // swagger url and specs setup
-      app.use(
-        '/api-docs',
-        swaggerUi.serve,
-        swaggerUi.setup(swaggerSpec, {
-          explorer: true,
-        }),
-      );
-    }
-
-    app.use('/v4/auth', validateAuth);
+    app.use('/auth', validateAuth);
     app.use('/', routes);
-    // eslint-disable-next-line no-unused-vars
-    app.use((req, res, next) => errorResponse({
+
+    app.use((req, res) => errorResponse({
       code: STATUS_CODE_DATA_NOT_FOUND,
       req,
       res,
       message: 'Route not found',
     }));
 
-    // error handler for API validation errors
-    app.use((err, req, res, next) => {
-      if (err instanceof swaggerValidation.InputValidationError) {
-        return errorResponse({
-          code: 400,
-          req,
-          res,
-          message: JSON.stringify(err.errors),
-        });
-      }
-      return next(err);
-    });
-
-    // eslint-disable-next-line no-unused-vars
-    app.use((error, req, res, next) => errorResponse({
+    app.use((error, req, res) => errorResponse({
       code: STATUS_CODE_FAILURE,
       req,
       res,
@@ -112,7 +64,7 @@ initConfig()
     app.set('port', config.PORT || DEFAULT_PORT);
 
     const server = app.listen(app.get('port'), () => {
-      mongoInit(config);
+      mongoInit({ db: config.db, logger });
       logger.info(`Express server listening on port ${server.address().port}`);
     });
   })

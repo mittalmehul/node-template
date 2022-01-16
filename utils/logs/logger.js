@@ -2,7 +2,7 @@ const bunyan = require('bunyan');
 const httpContext = require('express-http-context');
 
 const log = bunyan.createLogger({
-  name: 'auth-service-b',
+  name: 'node-template',
 });
 
 /**

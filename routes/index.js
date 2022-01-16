@@ -9,8 +9,4 @@ router.get('/health', (req, res) => {
   });
 });
 
-require('../modules/login/routes/login.routes')(router);
-
-require('../modules/s3/routes/s3.routes')(router);
-
 module.exports = router;
